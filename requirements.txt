@@ -6,3 +6,5 @@ bottle-sqlalchemy
 sqlalchemy
 fake-factory
 jsonpath-rw
+requests
+responses
