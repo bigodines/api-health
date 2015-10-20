@@ -9,8 +9,10 @@ class Task(object):
     Its existing purpose is to serve as a instruction set to be used by workers.
     Please, no business logic here.
     """
-    def __init__(self, url, req_options=None, assertions=[]):
+    def __init__(self, url, req_options=None, expected_fields=[]):
         self.url = url
+        self.request_otpions = req_options
+        self.expected_fields = expected_fields
 
     def __repr__(self):
         return "<Task(%s)>" & self.url
