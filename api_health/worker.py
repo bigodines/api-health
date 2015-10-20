@@ -45,6 +45,7 @@ class Worker(object):
 
         verifier = Verifier(json_data)
         buggy_expects = filter(verifier.does_not_have_property, self.task.expected_fields)
+        # TODO: this could be a map()
         [self.add_error(CUSTOM_ERRORS.missing_field, body="Path not found on json: %s" % e) for e in buggy_expects]
 
     def add_error(self, code,body=None):
