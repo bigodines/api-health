@@ -2,6 +2,7 @@
 
 import requests
 
+from api_health.verifier import Verifier
 
 class Worker(object):
     """
@@ -11,19 +12,20 @@ class Worker(object):
     def __init__(self, task):
         self.task = task
         self.errors = []
+        self.is_done = False
 
     def get_errors(self):
         return self.errors
 
     def has_expected_data(self):
-        return False
+        return self.errors == [] and self.is_done
 
     def fetch(self):
         result = requests.get(self.task.url)
         try:
             result.raise_for_status()
             json_result = result.json()
-            return result
+            return json_result
         except requests.HTTPError, e:
             self.errors.append({'url': self.task.url,
                                 'code': result.status_code,
@@ -38,8 +40,25 @@ class Worker(object):
             return None
         return result
 
-    def verify(self):
-        pass
+    def execute(self):
+        response = self.fetch()
+        self.verify(response)
+        self.is_done = True
+
+    def verify(self, json_data):
+        if not json_data or not self.task.expected_fields:
+            return
+
+        verifier = Verifier(json_data)
+        buggy_expects = filter(verifier.does_not_have_property, self.task.expected_fields)
+        [self.add_error(CUSTOM_ERRORS.missing_field, body="Path not found on json: %s" % e) for e in buggy_expects]
+
+    def add_error(self, code,body=None):
+        self.errors.append({
+            'url': self.task.url,
+            'code': code,
+            'message': body
+            })
 
 class CUSTOM_ERRORS:
     invalid_response, missing_field, type_error = range(1,4)

@@ -12,3 +12,6 @@ class Verifier(object):
     def has_property(self, path):
         expr = parse(path)
         return len(expr.find(self.json_obj)) > 0
+
+    def does_not_have_property(self, path):
+        return not self.has_property(path)
