@@ -27,16 +27,10 @@ class Worker(object):
             json_result = result.json()
             return json_result
         except requests.HTTPError, e:
-            self.errors.append({'url': self.task.url,
-                                'code': result.status_code,
-                                'body': result.text or None
-                                })
+            self.add_error(code=result.status_code, body=result.text)
             return None
         except ValueError, e:
-            self.errors.append({'url': self.task.url,
-                                'code': CUSTOM_ERRORS.invalid_response,
-                                'body': result.text or None
-                                })
+            self.add_error(code=CUSTOM_ERRORS.invalid_response, body=result.text)
             return None
         return result
 
