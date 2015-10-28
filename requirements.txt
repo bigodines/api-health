@@ -1,10 +1,5 @@
-bottle
+tornado
 click
-beaker
-jinja2
-bottle-sqlalchemy
-sqlalchemy
-fake-factory
 jsonpath-rw
 requests
 responses

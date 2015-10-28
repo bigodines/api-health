@@ -1,30 +1,38 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import os
 import click
-from bottle import static_file, Bottle, run, TEMPLATE_PATH
-from beaker.middleware import SessionMiddleware
 
+# tornado
+import tornado.ioloop
+import tornado.web
+# from tornado.concurrent import Future
+# from tornado import gen
+
+# jinja2
+from jinja2 import Environment, FileSystemLoader
+
+# api_health
 from api_health import settings
-from api_health.routes import Routes
 
 
-TEMPLATE_PATH.insert(0, settings.TEMPLATE_PATH)
 session_opts = {
     'session.type': 'file',
     'session.auto': True
 }
 
-app = SessionMiddleware(Bottle(), session_opts)
 
-# Bottle Routes
-app.wrap_app.merge(Routes)
+class BaseHandler(tornado.web.RequestHandler):
+    # Load template file templates/site.html
+    print settings.TEMPLATE_PATH
+    templateLoader = FileSystemLoader(searchpath=settings.TEMPLATE_PATH)
+    templateEnv = Environment(loader=templateLoader)
 
 
-@app.wrap_app.route('/assets/<path:path>', name='assets')
-def assets(path):
-    yield static_file(path, root=settings.STATIC_PATH)
+class Dummy(BaseHandler):
+    def get(self):
+        template = self.templateEnv.get_template('index.html')
+        self.write(template.render())
 
 
 @click.group()
@@ -35,13 +43,18 @@ def cmds():
 @cmds.command()
 @click.option('--port', default=os.environ.get('PORT', 8080), type=int,
               help=u'Set application server port!')
-@click.option('--ip', default='0.0.0.0', type=str,
-              help=u'Set application server ip!')
 @click.option('--debug', default=False,
               help=u'Set application server debug!')
-def runserver(port, ip, debug):
-    click.echo('Start server at: {}:{}'.format(ip, port))
-    run(app=app, host=ip, port=port, debug=debug, reloader=debug)
+def runserver(port, debug):
+    app = tornado.web.Application(
+        [
+            (r'/', Dummy)
+        ],
+        debug=debug
+    )
+    app.listen(port)
+    click.echo('Server running on port: {}'.format(port))
+    tornado.ioloop.IOLoop.current().start()
 
 
 @cmds.command()
