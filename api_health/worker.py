@@ -4,6 +4,7 @@ import requests
 
 from api_health.verifier import Verifier
 
+
 class Worker(object):
     """
     A worker is responsible for doing a task and iterating over its output
