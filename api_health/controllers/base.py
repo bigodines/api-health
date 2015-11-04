@@ -14,4 +14,3 @@ class BaseController(tornado.web.RequestHandler):
     def get(self):
         template = self.templateEnv.get_template('index.html')
         self.write(template.render())
-

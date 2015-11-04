@@ -3,7 +3,7 @@
 import os
 import click
 
-# tornado
+# 3rd pty
 import tornado.ioloop
 import tornado.web
 # from tornado.concurrent import Future
@@ -13,6 +13,7 @@ import tornado.web
 from api_health.controllers.base import BaseController
 from api_health.controllers.runner import JobRunner
 from api_health.controllers.task import TaskManagement
+
 session_opts = {
     'session.type': 'file',
     'session.auto': True
@@ -32,13 +33,14 @@ def cmds():
 def runserver(port, debug):
     app = tornado.web.Application(
         [
-            (r'/', BaseController)
-            (r'/run', JobRunner)
+            (r'/', BaseController),
+            (r'/run', JobRunner),
             (r'/task', TaskManagement)
         ],
         debug=debug
     )
     app.listen(port)
+
     click.echo('Server running on port: {}'.format(port))
     tornado.ioloop.IOLoop.current().start()
 
