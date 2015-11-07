@@ -10,6 +10,7 @@ import tornado.web
 # from tornado import gen
 
 # api_health
+from api_health import settings
 from api_health.controllers.base import BaseController
 from api_health.controllers.runner import JobRunner
 from api_health.controllers.task import TaskManagement
@@ -31,13 +32,15 @@ def cmds():
 @click.option('--debug', default=False,
               help=u'Set application server debug!')
 def runserver(port, debug):
+    print settings.STATIC_PATH
     app = tornado.web.Application(
         [
             (r'/', BaseController),
             (r'/run', JobRunner),
             (r'/task', TaskManagement)
         ],
-        debug=debug
+        debug=debug,
+        static_path=settings.STATIC_PATH
     )
     app.listen(port)
 
