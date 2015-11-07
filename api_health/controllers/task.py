@@ -8,7 +8,7 @@ class TaskManagement(BaseController):
 
     def get(self):
         template_name = "list.html"
-        if id:
+        if False:
             template_name = 'detail.html'
 
         template = self.templateEnv.get_template(template_name)
@@ -16,7 +16,7 @@ class TaskManagement(BaseController):
         print all_tasks
         task = Task(url="foo")
         session.add(task)
-        self.write(template.render(task))
+        self.write(template.render(all_tasks=all_tasks))
 
     def post(self):
         task = Task(url="http://bleh.com")

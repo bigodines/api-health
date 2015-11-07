@@ -32,7 +32,6 @@ def cmds():
 @click.option('--debug', default=False,
               help=u'Set application server debug!')
 def runserver(port, debug):
-    print settings.STATIC_PATH
     app = tornado.web.Application(
         [
             (r'/', BaseController),
