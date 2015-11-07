@@ -5,15 +5,11 @@ import click
 
 # 3rd pty
 import tornado.ioloop
-import tornado.web
 # from tornado.concurrent import Future
 # from tornado import gen
 
 # api_health
-from api_health import settings
-from api_health.controllers.base import BaseController
-from api_health.controllers.runner import JobRunner
-from api_health.controllers.task import TaskManagement
+from api_health import app
 
 session_opts = {
     'session.type': 'file',
@@ -32,16 +28,8 @@ def cmds():
 @click.option('--debug', default=False,
               help=u'Set application server debug!')
 def runserver(port, debug):
-    app = tornado.web.Application(
-        [
-            (r'/', BaseController),
-            (r'/run', JobRunner),
-            (r'/task', TaskManagement)
-        ],
-        debug=debug,
-        static_path=settings.STATIC_PATH
-    )
-    app.listen(port)
+    instance = app.create({'debug': debug})
+    instance.listen(port)
 
     click.echo('Server running on port: {}'.format(port))
     tornado.ioloop.IOLoop.current().start()
