@@ -26,3 +26,4 @@ class TestApi(TestHandlerBase):
     def test_get_tasks_api(self):
         response = self.fetch('/api/task')
         self.assertEqual(200, response.code)
+        self.assertEqual('[]', response.body)

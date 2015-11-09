@@ -5,7 +5,7 @@ from api_health import settings
 from api_health.controllers.base import BaseController
 from api_health.controllers.runner import JobRunner
 from api_health.controllers.task import TaskManagement
-from api_health.controllers.api.task import TaskApi
+from api_health.controllers.api.task import TaskApiController
 
 
 def create(options={}):
@@ -14,7 +14,7 @@ def create(options={}):
             (r'/', BaseController),
             (r'/run', JobRunner),
             (r'/task', TaskManagement),
-            (r'/api/task', TaskApi)
+            (r'/api/task', TaskApiController)
         ],
         debug=options.get('debug'),
         static_path=settings.STATIC_PATH
