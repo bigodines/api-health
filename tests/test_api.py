@@ -3,9 +3,7 @@ import os
 import os.path
 import sys
 
-from tornado.options import options
 from tornado.testing import AsyncHTTPTestCase
-from api_health.controllers.api.task import TaskApi
 
 APP_ROOT = os.path.abspath(os.path.join(
     os.path.dirname(__file__), '..'))
@@ -22,12 +20,9 @@ class TestHandlerBase(AsyncHTTPTestCase):
     def get_app(self):
         return instance
 
-    def get_http_port(self):
-        return options.port
-
 
 class TestApi(TestHandlerBase):
 
     def test_get_tasks_api(self):
-        pass
-
+        response = self.fetch('/api/task')
+        self.assertEqual(200, response.code)
