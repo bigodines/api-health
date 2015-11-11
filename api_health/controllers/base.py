@@ -7,6 +7,14 @@ import tornado.web
 from api_health import settings
 
 
+class SimpleMultiDict(dict):
+    def getlist(self, key):
+        return self[key]
+
+    def __repr__(self):
+        return type(self).__name__ + '(' + dict.__repr__(self) + ')'
+
+
 class BaseController(tornado.web.RequestHandler):
     templateLoader = FileSystemLoader(searchpath=settings.TEMPLATE_PATH)
     templateEnv = Environment(loader=templateLoader,

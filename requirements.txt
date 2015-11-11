@@ -3,3 +3,6 @@ click
 jsonpath-rw
 requests
 responses
+WTForms
+wtforms-tornado
+WTForms-Alchemy

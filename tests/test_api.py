@@ -2,13 +2,16 @@
 import os
 import os.path
 import sys
+import urllib
 
 from tornado.testing import AsyncHTTPTestCase
+
 
 APP_ROOT = os.path.abspath(os.path.join(
     os.path.dirname(__file__), '..'))
 sys.path.append(os.path.join(APP_ROOT, '..'))
 
+os.putenv('ENV', 'test')
 import api_health.app
 instance = api_health.app.create()
 
@@ -27,3 +30,14 @@ class TestApi(TestHandlerBase):
         response = self.fetch('/api/task')
         self.assertEqual(200, response.code)
         self.assertEqual('[]', response.body)
+
+    def test_create_new_tasks(self):
+        post_args = {'url': 'http://baz.com'}
+
+        response = self.fetch(
+            '/api/task',
+            method='POST',
+            body=urllib.urlencode(post_args),
+            follow_redirects=False)
+
+        self.assertEqual(200, response.code)

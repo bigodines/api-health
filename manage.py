@@ -37,6 +37,7 @@ def runserver(port, debug):
 
 @cmds.command()
 def test():
+    os.environ['ENV'] = 'test'
     import unittest
     loader = unittest.TestLoader()
     tests = loader.discover('tests')

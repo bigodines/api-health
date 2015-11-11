@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import datetime
+from wtforms_alchemy import ModelForm
 from sqlalchemy import Column, Integer, String, Text, DateTime, func
 
-from .base import Base, engine
+from api_health.models.base import Base, engine
 
 
 class Task(Base):
@@ -16,13 +18,16 @@ class Task(Base):
     last_run = Column(DateTime, default=func.now())
     status = Column(String)
 
-    def __init__(self, url, expected_fields=None, status=None):
+    def __init__(self, url=None, expected_fields=None, status=None):
         self.url = url
         self.expected_fields = expected_fields
         self.status = status if status else 'FAIL'
 
-    def __repr__(self):
-        return "<Task(id=%s, url=%s)>" % (self.id, self.url)
+
+
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
 
 # Initialize database schema (create tables)
 Base.metadata.create_all(engine)
