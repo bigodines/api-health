@@ -18,11 +18,15 @@ class Task(Base):
     last_run = Column(DateTime, default=func.now())
     status = Column(String)
 
-    def __init__(self, url=None, expected_fields=None, status=None):
-        self.url = url
-        self.expected_fields = expected_fields
-        self.status = status if status else 'FAIL'
+    def to_json(self):
+        return dict(id=self.id,
+                    url=self.url,
+                    expected_fields=self.expected_fields,
+                    last_run=self.last_run,
+                    status=self.status)
 
+    def __repr__(self):
+        return "<Task(id=%s, url=%s)>" % (self.id, self.url)
 
 
 class TaskForm(ModelForm):

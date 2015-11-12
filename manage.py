@@ -8,15 +8,6 @@ import tornado.ioloop
 # from tornado.concurrent import Future
 # from tornado import gen
 
-# api_health
-from api_health import app
-
-session_opts = {
-    'session.type': 'file',
-    'session.auto': True
-}
-
-
 @click.group()
 def cmds():
     pass
@@ -28,6 +19,9 @@ def cmds():
 @click.option('--debug', default=False,
               help=u'Set application server debug!')
 def runserver(port, debug):
+    # api_health
+    from api_health import app
+
     instance = app.create({'debug': debug})
     instance.listen(port)
 
@@ -37,8 +31,9 @@ def runserver(port, debug):
 
 @cmds.command()
 def test():
-    os.environ['ENV'] = 'test'
     import unittest
+    from api_health import settings
+    settings.db_engine_url = 'sqlite:///:memory:'
     loader = unittest.TestLoader()
     tests = loader.discover('tests')
     testRunner = unittest.runner.TextTestRunner()
