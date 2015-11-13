@@ -1,8 +1,11 @@
-<html>
-<head>
-  <title>api monitor</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<form method="post" action="/task">
+  <dl>
+    {{ render_field(form.url) }}
+    {{ render_field(form.expected_fields) }}
+  </dl>
+  <p><input type=submit value=Register>
+</form>
+{% endblock %}

@@ -3,6 +3,7 @@ import os
 import os.path
 import sys
 import urllib
+import json
 
 from tornado import gen
 from tornado.testing import AsyncHTTPTestCase, gen_test
@@ -48,4 +49,9 @@ class TestApi(TestHandlerBase):
             follow_redirects=False)
 
         self.assertEqual(200, response.code)
+        response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
+        self.assertEqual(200, response.code)
+        actual = json.loads(response.body)
+        self.assertEqual('http://baz.com', actual[0].get('url'))
+
 

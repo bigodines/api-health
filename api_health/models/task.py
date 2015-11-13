@@ -13,7 +13,7 @@ class Task(Base):
     """
     __tablename__ = 'tasks'
     id = Column(Integer, primary_key=True)
-    url = Column(String)
+    url = Column(String, nullable=False)
     expected_fields = Column(Text)
     last_run = Column(DateTime, default=func.now())
     status = Column(String)

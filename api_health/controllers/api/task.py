@@ -27,22 +27,27 @@ class TaskApiController(BaseController):
 
     @gen.coroutine
     def post(self):
-        task = Task()
-        form = TaskForm(SimpleMultiDict(
-                        self.request.arguments, obj=task))
-        if form.validate():
-            form.populate_obj(task)
-            TaskApi().add_task(task)
-            self.write('[]')
-        else:
+        try:
+            task = TaskApi().add_task(self.request.arguments)
+            self.write(json.dumps(task, default=alchemyencoder))
+        except Exception as form_errors:
             self.set_status(400)
-            self.write('{"error":"%s"}' % form.errors)
+            self.write('{"error":"%s"}' % form_errors)
 
 
 class TaskApi(object):
     def get_tasks(self):
         return session.query(Task).all()
 
-    def add_task(self, task=None):
-        session.add(task)
-        session.flush()
+    def add_task(self, args):
+        task = Task()
+        form = TaskForm(SimpleMultiDict(
+                        args, obj=task))
+        if form.validate():
+            form.populate_obj(task)
+            session.add(task)
+            session.flush()
+            return form
+
+        # would rather be explicit here.
+        raise Exception("%s" % form.errors)
