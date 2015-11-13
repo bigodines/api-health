@@ -7,7 +7,7 @@ from api_health.verifier import Verifier
 
 class Worker(object):
     """
-    A worker is responsible for doing a task and iterating over its output
+    A worker is responsible for performing a task and iterating over its output
     in order to verify if it contains what would be expected
     """
     def __init__(self, task):
@@ -27,10 +27,10 @@ class Worker(object):
             result.raise_for_status()
             json_result = result.json()
             return json_result
-        except requests.HTTPError, e:
+        except requests.HTTPError:
             self.add_error(code=result.status_code, body=result.text)
             return None
-        except ValueError, e:
+        except ValueError:
             self.add_error(code=CUSTOM_ERRORS.invalid_response, body=result.text)
             return None
         return result
@@ -49,14 +49,15 @@ class Worker(object):
         # TODO: this could be a map()
         [self.add_error(CUSTOM_ERRORS.missing_field, body="Path not found on json: %s" % e) for e in buggy_expects]
 
-    def add_error(self, code,body=None):
+    def add_error(self, code, body=None):
         self.errors.append({
             'url': self.task.url,
             'code': code,
             'message': body
             })
 
+
 class CUSTOM_ERRORS:
-    invalid_response, missing_field, type_error = range(1,4)
+    invalid_response, missing_field, type_error = range(1, 4)
 
 
