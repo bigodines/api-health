@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 from wtforms_alchemy import ModelForm
-from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy import Column, Integer, String, Text, DateTime
 
 from api_health.models.base import Base, engine
 
@@ -15,10 +15,11 @@ class Task(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String, nullable=False)
     expected_fields = Column(Text)
-    last_run = Column(DateTime, default=func.now())
+    last_run = Column(DateTime)
     status = Column(String)
 
     def to_json(self):
+        """Serializes a Task to JSON format"""
         return dict(id=self.id,
                     url=self.url,
                     expected_fields=self.expected_fields,

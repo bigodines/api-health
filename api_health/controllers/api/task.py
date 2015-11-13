@@ -19,6 +19,10 @@ def alchemyencoder(obj):
 
 
 class TaskApiController(BaseController):
+    """
+    Interfaces with TaskApi rendering the responses in a developer friendly
+    format. (for use facing templates, refer to controllers/task.py)
+    """
     @gen.coroutine
     def get(self):
         all_tasks = TaskApi().get_tasks()
@@ -36,10 +40,19 @@ class TaskApiController(BaseController):
 
 
 class TaskApi(object):
+    """
+    Core business for the task management. This class is responsible for storing
+    and retrieving Task related operations.
+    """
     def get_tasks(self):
+        """Returns a list of tasks available"""
         return session.query(Task).all()
 
     def add_task(self, args):
+        """
+        Stores a new Task() and returns a TaskForm() to be rendered
+        or Raise and exception with the invalid/missing fields
+        """
         task = Task()
         form = TaskForm(SimpleMultiDict(
                         args, obj=task))

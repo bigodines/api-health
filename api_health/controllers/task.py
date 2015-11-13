@@ -6,7 +6,10 @@ from ..models.task import Task
 
 
 class TaskManagement(BaseController):
-
+    """
+    Graphic controller logic.
+    Allows interfacing with the API via browser. (aka GUI)
+    """
     def get(self):
         template_name = "list.html"
         if False:
@@ -14,7 +17,6 @@ class TaskManagement(BaseController):
 
         template = self.templateEnv.get_template(template_name)
         all_tasks = TaskApi().get_tasks()
-        print all_tasks
         self.write(template.render(all_tasks=all_tasks))
 
     def post(self):
