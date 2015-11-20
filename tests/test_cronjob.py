@@ -29,10 +29,9 @@ class TestCronJob(AsyncTestCase):
         t2 = Task(url="https://api.github.com/repos/bigodines/api-health/")
         session.add(t1)
         session.add(t2)
-        session.flush()
+        session.commit()
 
         yield cron.producer()
-
         self.assertEquals(cron.queue.qsize(), 2)
 
     @gen_test
@@ -40,6 +39,7 @@ class TestCronJob(AsyncTestCase):
         t1 = Task(url="https://api.github.com")
         t2 = Task(url="https://api.github.com/repos/bigodines/api-health/")
 
+        # sanity check
         self.assertIsNone(t1.last_run)
 
         cron.queue.put(t1)
@@ -49,4 +49,5 @@ class TestCronJob(AsyncTestCase):
         yield cron.queue.join()
 
         self.assertIsNotNone(t1.last_run)
+        self.assertIsNotNone(t2.last_run)
 

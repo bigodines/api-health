@@ -25,14 +25,14 @@ class TaskApiController(BaseController):
     """
     @gen.coroutine
     def get(self):
-        all_tasks = TaskApi().get_tasks()
+        all_tasks = yield TaskApi().get_tasks()
         response = json.dumps([r.to_json() for r in all_tasks], default=alchemyencoder)
         self.write(response)
 
     @gen.coroutine
     def post(self):
         try:
-            task = TaskApi().add_task(self.request.arguments)
+            task = yield TaskApi().add_task(self.request.arguments)
             self.write(json.dumps(task, default=alchemyencoder))
         except Exception as form_errors:
             self.set_status(400)
@@ -44,10 +44,14 @@ class TaskApi(object):
     Core business for the task management. This class is responsible for storing
     and retrieving Task related operations.
     """
+    @gen.coroutine
     def get_tasks(self):
         """Returns a list of tasks available"""
-        return session.query(Task).all()
+        all_tasks = session.query(Task).all()
+        session.flush()
+        raise gen.Return(all_tasks)
 
+    @gen.coroutine
     def add_task(self, args):
         """
         Stores a new Task() and returns a TaskForm() to be rendered
@@ -59,8 +63,8 @@ class TaskApi(object):
         if form.validate():
             form.populate_obj(task)
             session.add(task)
-            session.flush()
-            return form
+            session.commit()
+            raise gen.Return(form)
 
         # would rather be explicit here.
         raise Exception("%s" % form.errors)

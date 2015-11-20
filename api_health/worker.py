@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import requests
+from datetime import datetime
 
+from api_health.models.base import session
 from api_health.verifier import Verifier
 
 
@@ -35,10 +37,16 @@ class Worker(object):
             return None
         return result
 
-    def execute(self):
+    def execute(self, task=None):
+        if task:
+            self.task = task
         response = self.fetch()
         self.verify(response)
+        self.task.last_run = datetime.now()
+        self.task.status = "SUCCESS" if self.has_expected_data else "FAIL"
+        session.commit()
         self.is_done = True
+        return self.task
 
     def verify(self, json_data):
         if not json_data or not self.task.expected_fields:

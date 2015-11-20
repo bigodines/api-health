@@ -41,8 +41,11 @@ class TestApi(TestHandlerBase):
 
     @gen_test
     def test_create_new_tasks(self):
-        post_args = {'url': 'http://baz.com'}
+        response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
+        self.assertEqual(200, response.code)
+        self.assertEqual('[]', response.body)
 
+        post_args = {'id': 1, 'url': 'http://baz.com'}
         response = yield self.http_client.fetch(self.get_url('/api/task'),
             method='POST',
             body=urllib.urlencode(post_args),
