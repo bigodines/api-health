@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 from wtforms_alchemy import ModelForm
 from sqlalchemy import Column, Integer, String, Text, DateTime
 
@@ -17,6 +16,12 @@ class Task(Base):
     expected_fields = Column(Text)
     last_run = Column(DateTime)
     status = Column(String)
+
+    def expected_fields_as_list(self):
+        if isinstance(self.expected_fields, list):
+            return self.expected_fields
+
+        return [x.strip() for x in self.expected_fields.split(',')]
 
     def to_json(self):
         """Serializes a Task to JSON format"""

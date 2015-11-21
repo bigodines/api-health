@@ -21,7 +21,7 @@ class Worker(object):
         return self.errors
 
     def has_expected_data(self):
-        return self.errors == [] and self.is_done
+        return len(self.errors) == 0 and self.is_done
 
     def fetch(self):
         result = requests.get(self.task.url)
@@ -42,10 +42,10 @@ class Worker(object):
             self.task = task
         response = self.fetch()
         self.verify(response)
-        self.task.last_run = datetime.now()
-        self.task.status = "SUCCESS" if self.has_expected_data else "FAIL"
-        session.commit()
         self.is_done = True
+        self.task.last_run = datetime.now()
+        self.task.status = "SUCCESS" if self.has_expected_data() else "FAIL"
+        session.commit()
         return self.task
 
     def verify(self, json_data):
@@ -53,7 +53,7 @@ class Worker(object):
             return
 
         verifier = Verifier(json_data)
-        buggy_expects = filter(verifier.does_not_have_property, self.task.expected_fields)
+        buggy_expects = filter(verifier.does_not_have_property, self.task.expected_fields_as_list())
         # TODO: this could be a map()
         [self.add_error(CUSTOM_ERRORS.missing_field, body="Path not found on json: %s" % e) for e in buggy_expects]
 

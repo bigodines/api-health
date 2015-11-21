@@ -22,6 +22,7 @@ class JsonVerifier(unittest.TestCase):
         simple_json = u'{ "foo": "bar" }'
         verifier = Verifier(simple_json)
         self.assertTrue(verifier.has_property('foo'))
+        self.assertTrue(verifier.does_not_have_property('bu'))
         self.assertFalse(verifier.has_property('bleh'))
 
     def test_should_check_arrays(self):
