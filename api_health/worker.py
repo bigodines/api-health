@@ -15,13 +15,12 @@ class Worker(object):
     def __init__(self, task):
         self.task = task
         self.errors = []
-        self.is_done = False
 
     def get_errors(self):
         return self.errors
 
     def has_expected_data(self):
-        return len(self.errors) == 0 and self.is_done
+        return len(self.errors) == 0
 
     def fetch(self):
         result = requests.get(self.task.url)
@@ -42,7 +41,6 @@ class Worker(object):
             self.task = task
         response = self.fetch()
         self.verify(response)
-        self.is_done = True
         self.task.last_run = datetime.now()
         self.task.status = "SUCCESS" if self.has_expected_data() else "FAIL"
         session.commit()

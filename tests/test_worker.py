@@ -13,7 +13,7 @@ class TestWorker(unittest.TestCase):
     def test_contructor(self):
         task = Task(url="http://foo.com/")
         worker = Worker(task)
-        self.assertFalse(worker.has_expected_data())
+        self.assertTrue(worker.has_expected_data())
 
     @responses.activate
     def test_worker_knows_how_to_request(self):

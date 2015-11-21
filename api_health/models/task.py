@@ -18,6 +18,11 @@ class Task(Base):
     status = Column(String)
 
     def expected_fields_as_list(self):
+        """
+        Guarantees that the expected_fields will be a list.
+        (aka: converts form "text" field to something that our verifier can work
+        with.")
+        """
         if isinstance(self.expected_fields, list):
             return self.expected_fields
 
