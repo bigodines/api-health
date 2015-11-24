@@ -63,7 +63,15 @@ class TestApi(TestHandlerBase):
                 method="DELETE")
 
         response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
-        self.assertEqual(200, response.code)
         # should be back to the empty state
         self.assertEqual('[]', response.body,
                 "should have deleted the task")
+
+    @gen_test
+    def test_bogus_delete(self):
+        try:
+            yield self.http_client.fetch(self.get_url('/api/task?id=100'),
+                method="DELETE")
+            self.assertTrue(False, "was expecting a 400")
+        except Exception as e:
+            self.assertEqual(400, e.code)

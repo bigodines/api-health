@@ -46,7 +46,6 @@ class TaskApiController(BaseController):
 
         except Exception as form_errors:
             self.set_status(400)
-            print form_errors
             self.write('{"error": "%s"}' % form_errors)
 
 
