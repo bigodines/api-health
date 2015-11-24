@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import responses
 
 from tornado.testing import AsyncTestCase, gen_test
 from tornado.queues import Queue
@@ -24,7 +25,15 @@ class TestCronJob(AsyncTestCase):
         Base.metadata.drop_all(engine)
 
     @gen_test
+    @responses.activate
     def test_producer_should_load_all_tasks(self):
+        responses.add(responses.GET,
+                'https://api.github.com',
+                status=200)
+        responses.add(responses.GET,
+                'https://api.github.com/repos/bigodines/api-health/',
+                status=200)
+
         t1 = Task(url="https://api.github.com")
         t2 = Task(url="https://api.github.com/repos/bigodines/api-health/")
         session.add(t1)
@@ -36,6 +45,13 @@ class TestCronJob(AsyncTestCase):
 
     @gen_test
     def test_consumer_should_run_tasks_from_queue(self):
+        responses.add(responses.GET,
+                'https://api.github.com',
+                status=200)
+        responses.add(responses.GET,
+                'https://api.github.com/repos/bigodines/api-health/',
+                status=200)
+
         t1 = Task(url="https://api.github.com")
         t2 = Task(url="https://api.github.com/repos/bigodines/api-health/")
 
