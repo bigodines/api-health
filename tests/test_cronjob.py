@@ -9,11 +9,6 @@ from api_health.models.base import Base, session, engine
 from api_health.models.task import Task
 
 
-class WorkerMock(object):
-    def execute(self):
-        pass
-
-
 class TestCronJob(AsyncTestCase):
     def setUp(self):
         super(TestCronJob, self).setUp()
@@ -66,4 +61,3 @@ class TestCronJob(AsyncTestCase):
 
         self.assertIsNotNone(t1.last_run)
         self.assertIsNotNone(t2.last_run)
-

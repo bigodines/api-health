@@ -2,6 +2,7 @@
 import json
 import datetime
 import decimal
+import urlparse
 
 from tornado import gen
 
@@ -33,6 +34,19 @@ class TaskApiController(BaseController):
     def post(self):
         try:
             task = yield TaskApi().add_task(self.request.arguments)
+            self.write(json.dumps(task, default=alchemyencoder))
+        except Exception as form_errors:
+            self.set_status(400)
+            self.write('{"error":"%s"}' % form_errors)
+
+    @gen.coroutine
+    def put(self):
+        try:
+            new_values = urlparse.parse_qs(self.request.body)
+            for k in new_values:
+                new_values[k] = new_values[k]
+
+            task = yield TaskApi().update_task(new_values)
             self.write(json.dumps(task, default=alchemyencoder))
         except Exception as form_errors:
             self.set_status(400)
@@ -74,10 +88,18 @@ class TaskApi(object):
             form.populate_obj(task)
             session.add(task)
             session.commit()
-            raise gen.Return(form)
 
-        # would rather be explicit here.
-        raise Exception("%s" % form.errors)
+        raise gen.Return(form)
+
+    @gen.coroutine
+    def update_task(self, args):
+        task = session.query(Task).filter_by(id=args.get('id')[0]).first()
+        form = TaskForm(SimpleMultiDict(args, obj=task))
+        if form.validate():
+            form.populate_obj(task)
+            session.commit()
+
+        raise gen.Return(form)
 
     @gen.coroutine
     def delete_task(self, args):

@@ -39,7 +39,7 @@ class TestApi(TestHandlerBase):
         self.assertEqual('[]', response.body)
 
     @gen_test
-    def test_create_and_delete_task(self):
+    def test_task_CRUD(self):
         response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
         self.assertEqual(200, response.code)
         # assert it is empty
@@ -58,6 +58,20 @@ class TestApi(TestHandlerBase):
         # assert it created
         self.assertEqual('http://baz.com', actual[0].get('url'),
                 "should have created a task")
+
+        post_args = {'id': 1, 'url': 'http://xoxoxo.com'}
+        yield self.http_client.fetch(self.get_url('/api/task?id=%s' % actual[0].get('id')),
+            method='PUT',
+            body=urllib.urlencode(post_args),
+            follow_redirects=False)
+
+        response = yield self.http_client.fetch(self.get_url('/api/task'),
+                method='GET')
+        self.assertEqual(200, response.code)
+        actual = json.loads(response.body)
+        # assert it is updated
+        self.assertEqual('http://xoxoxo.com', actual[0].get('url'),
+                "should have updated a task")
 
         yield self.http_client.fetch(self.get_url('/api/task?id=%s' % actual[0].get("id")),
                 method="DELETE")
