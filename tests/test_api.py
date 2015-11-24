@@ -5,7 +5,6 @@ import sys
 import urllib
 import json
 
-from tornado import gen
 from tornado.testing import AsyncHTTPTestCase, gen_test
 
 APP_ROOT = os.path.abspath(os.path.join(
@@ -40,9 +39,10 @@ class TestApi(TestHandlerBase):
         self.assertEqual('[]', response.body)
 
     @gen_test
-    def test_create_new_tasks(self):
+    def test_create_and_delete_task(self):
         response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
         self.assertEqual(200, response.code)
+        # assert it is empty
         self.assertEqual('[]', response.body)
 
         post_args = {'id': 1, 'url': 'http://baz.com'}
@@ -55,6 +55,15 @@ class TestApi(TestHandlerBase):
         response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
         self.assertEqual(200, response.code)
         actual = json.loads(response.body)
-        self.assertEqual('http://baz.com', actual[0].get('url'))
+        # assert it created
+        self.assertEqual('http://baz.com', actual[0].get('url'),
+                "should have created a task")
 
+        yield self.http_client.fetch(self.get_url('/api/task?id=%s' % actual[0].get("id")),
+                method="DELETE")
 
+        response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
+        self.assertEqual(200, response.code)
+        # should be back to the empty state
+        self.assertEqual('[]', response.body,
+                "should have deleted the task")

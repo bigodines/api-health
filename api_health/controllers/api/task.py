@@ -38,6 +38,17 @@ class TaskApiController(BaseController):
             self.set_status(400)
             self.write('{"error":"%s"}' % form_errors)
 
+    @gen.coroutine
+    def delete(self):
+        try:
+            yield TaskApi().delete_task(self.request.arguments)
+            self.write('[]')
+
+        except Exception as form_errors:
+            self.set_status(400)
+            print form_errors
+            self.write('{"error": "%s"}' % form_errors)
+
 
 class TaskApi(object):
     """
@@ -68,3 +79,15 @@ class TaskApi(object):
 
         # would rather be explicit here.
         raise Exception("%s" % form.errors)
+
+    @gen.coroutine
+    def delete_task(self, args):
+        try:
+            task = session.query(Task).filter_by(id=args.get('id')[0]).first()
+            session.delete(task)
+            session.commit()
+            # still haven't decided on a pattern for this class, as you can see
+            return True
+
+        except:
+            raise Exception("Could not delete task base on args: %s" % args)
