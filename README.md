@@ -17,9 +17,11 @@ please consider dropping me a line so I start caring about backwards compatibili
 
 #### using (via api)
 >###### get all tasks
+
 ```bash
 curl "http://localhost:8080/api/task"
 ```
+
 >##### create a task
 
 Creating a new task is as simple as making a POST request to /api/task with a URL and a list (comma separated) of required fields
@@ -44,6 +46,7 @@ curl "http://localhost:8080/api/task?id=1" -X DELETE
 ```
 
 >##### execute tasks
+
 There are two ways to run tasks. It can be done by running **cronjob.py** or by a rest call to /run:
 ```bash
 curl "http://localhost:8080/api/run"
