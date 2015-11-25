@@ -3,7 +3,8 @@
 ```
 Disclaimer:
 
-API-Health is still under heavily development. If you are planning on using it for anything else than playing around, please consider dropping me a line so I start caring about backwards compatibility.
+API-Health is still under heavily development. If you are planning on using it for anything else than playing around, 
+please consider dropping me a line so I start caring about backwards compatibility.
 ```
 
 ## Quickstart
