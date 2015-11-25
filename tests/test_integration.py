@@ -34,7 +34,7 @@ class TestIntegration(TestHandlerBase):
             content_type='application/json',
             status=666)
 
-        post_args = {'url': 'http://bazbaz.com', 'expected_fields': 'name'}
+        post_args = {'url': 'http://bazbaz.com', 'expected_fields': ['name']}
         response = yield self.http_client.fetch(self.get_url('/api/task'),
             method='POST',
             body=urllib.urlencode(post_args),

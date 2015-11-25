@@ -40,12 +40,15 @@ class TestApi(TestHandlerBase):
 
     @gen_test
     def test_task_CRUD(self):
-        response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
+        headers = {'Content-Type': 'application/json; charset=UTF-8'}
+        response = yield self.http_client.fetch(self.get_url('/api/task'),
+            method='GET',
+            headers=headers)
         self.assertEqual(200, response.code)
         # assert it is empty
         self.assertEqual('[]', response.body)
 
-        post_args = {'id': 1, 'url': 'http://baz.com'}
+        post_args = {'url': 'http://baz.com'}
         response = yield self.http_client.fetch(self.get_url('/api/task'),
             method='POST',
             body=urllib.urlencode(post_args),
@@ -59,10 +62,11 @@ class TestApi(TestHandlerBase):
         self.assertEqual('http://baz.com', actual[0].get('url'),
                 "should have created a task")
 
-        post_args = {'id': 1, 'url': 'http://xoxoxo.com'}
-        yield self.http_client.fetch(self.get_url('/api/task?id=%s' % actual[0].get('id')),
+        post_args = {'id': actual[0].get('id'), 'url': 'http://xoxoxo.com'}
+        yield self.http_client.fetch(self.get_url('/api/task'),
             method='PUT',
-            body=urllib.urlencode(post_args),
+            headers=headers,
+            body=json.dumps(post_args),
             follow_redirects=False)
 
         response = yield self.http_client.fetch(self.get_url('/api/task'),

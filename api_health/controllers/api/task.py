@@ -32,25 +32,16 @@ class TaskApiController(BaseController):
 
     @gen.coroutine
     def post(self):
-        try:
-            task = yield TaskApi().add_task(self.request.arguments)
-            self.write(json.dumps(task, default=alchemyencoder))
-        except Exception as form_errors:
-            self.set_status(400)
-            self.write('{"error":"%s"}' % form_errors)
+        values = urlparse.parse_qs(self.request.body)
+        task = yield TaskApi().add_task(values)
+        self.write(json.dumps(task.to_json(), default=alchemyencoder))
 
     @gen.coroutine
     def put(self):
-        try:
-            new_values = urlparse.parse_qs(self.request.body)
-            for k in new_values:
-                new_values[k] = new_values[k]
-
-            task = yield TaskApi().update_task(new_values)
-            self.write(json.dumps(task, default=alchemyencoder))
-        except Exception as form_errors:
-            self.set_status(400)
-            self.write('{"error":"%s"}' % form_errors)
+            values = json.loads(self.request.body)
+            task = yield TaskApi().update_task(values)
+            self.write(json.dumps(task.to_json(), default=alchemyencoder))
+#
 
     @gen.coroutine
     def delete(self):
@@ -89,17 +80,24 @@ class TaskApi(object):
             session.add(task)
             session.commit()
 
-        raise gen.Return(form)
+        raise gen.Return(task)
 
     @gen.coroutine
     def update_task(self, args):
-        task = session.query(Task).filter_by(id=args.get('id')[0]).first()
-        form = TaskForm(SimpleMultiDict(args, obj=task))
-        if form.validate():
-            form.populate_obj(task)
-            session.commit()
+        """
+        updates a record. manually and painfully. for now.
+        """
+        task = session.query(Task).filter_by(id=args['id']).first()
+        # TODO: write a helper in the base class to mimic form.populate_obj()
+        # or better yet: make form.populate_obj() work with dicts.
+        if 'expected_fields' in args:
+            if isinstance(args["expected_fields"], list):
+                args["expected_fields"] = ', '.join(args['expected_fields'])
+            task.expected_fields = args['expected_fields']
+        task.url = args['url']
+        session.commit()
 
-        raise gen.Return(form)
+        raise gen.Return(task)
 
     @gen.coroutine
     def delete_task(self, args):
