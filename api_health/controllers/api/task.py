@@ -32,7 +32,6 @@ class TaskApiController(BaseController):
 
     @gen.coroutine
     def post(self):
-        print self.request.body
         values = json.loads(self.request.body)
         task = yield TaskApi().add_task(values)
         self.write(json.dumps(task.to_json(), default=alchemyencoder))
