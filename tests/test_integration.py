@@ -28,16 +28,18 @@ class TestIntegration(TestHandlerBase):
     @responses.activate
     @gen_test
     def test_full_happy_path(self):
+        headers = {'Content-Type': 'application/json; charset=UTF-8'}
         responses.add(responses.GET,
             "http://bazbaz.com",
             body=u'{"name": "test", "numbers": [1, 2, 3]}',
             content_type='application/json',
             status=666)
 
-        post_args = {'url': 'http://bazbaz.com', 'expected_fields': ['name']}
+        post_args = '{"url": "http://bazbaz.com", "expected_fields": "name"}'
         response = yield self.http_client.fetch(self.get_url('/api/task'),
             method='POST',
-            body=urllib.urlencode(post_args),
+            headers=headers,
+            body=post_args,
             follow_redirects=False)
         self.assertEquals(200, response.code)
 

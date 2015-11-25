@@ -32,16 +32,16 @@ class TaskApiController(BaseController):
 
     @gen.coroutine
     def post(self):
-        values = urlparse.parse_qs(self.request.body)
+        print self.request.body
+        values = json.loads(self.request.body)
         task = yield TaskApi().add_task(values)
         self.write(json.dumps(task.to_json(), default=alchemyencoder))
 
     @gen.coroutine
     def put(self):
-            values = json.loads(self.request.body)
-            task = yield TaskApi().update_task(values)
-            self.write(json.dumps(task.to_json(), default=alchemyencoder))
-#
+        values = json.loads(self.request.body)
+        task = yield TaskApi().update_task(values)
+        self.write(json.dumps(task.to_json(), default=alchemyencoder))
 
     @gen.coroutine
     def delete(self):
@@ -73,12 +73,17 @@ class TaskApi(object):
         or Raise and exception with the invalid/missing fields
         """
         task = Task()
-        form = TaskForm(SimpleMultiDict(
-                        args, obj=task))
-        if form.validate():
-            form.populate_obj(task)
-            session.add(task)
-            session.commit()
+        # TODO: write a helper in the base class to mimic form.populate_obj()
+        # or better yet: make form.populate_obj() work with dicts.
+        if 'expected_fields' in args:
+            if isinstance(args["expected_fields"], list):
+                task.expected_fields = ','.join(str(args['expected_fields']))
+            else:
+                task.expected_fields = args['expected_fields']
+        if 'url' in args:
+            task.url = args["url"]
+        session.add(task)
+        session.commit()
 
         raise gen.Return(task)
 
@@ -92,9 +97,11 @@ class TaskApi(object):
         # or better yet: make form.populate_obj() work with dicts.
         if 'expected_fields' in args:
             if isinstance(args["expected_fields"], list):
-                args["expected_fields"] = ', '.join(args['expected_fields'])
-            task.expected_fields = args['expected_fields']
-        task.url = args['url']
+                task.expected_fields = ','.join(str(args['expected_fields']))
+            else:
+                task.expected_fields = args['expected_fields']
+        if 'url' in args:
+            task.url = args["url"]
         session.commit()
 
         raise gen.Return(task)

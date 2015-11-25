@@ -48,10 +48,11 @@ class TestApi(TestHandlerBase):
         # assert it is empty
         self.assertEqual('[]', response.body)
 
-        post_args = {'url': 'http://baz.com'}
+        post_args = '{"url": "http://baz.com"}'
         response = yield self.http_client.fetch(self.get_url('/api/task'),
             method='POST',
-            body=urllib.urlencode(post_args),
+            headers=headers,
+            body=post_args,
             follow_redirects=False)
 
         self.assertEqual(200, response.code)
@@ -62,11 +63,11 @@ class TestApi(TestHandlerBase):
         self.assertEqual('http://baz.com', actual[0].get('url'),
                 "should have created a task")
 
-        post_args = {'id': actual[0].get('id'), 'url': 'http://xoxoxo.com'}
+        post_args = '{"id": %s, "url": "http://xoxoxo.com"}' % actual[0].get('id')
         yield self.http_client.fetch(self.get_url('/api/task'),
             method='PUT',
             headers=headers,
-            body=json.dumps(post_args),
+            body=post_args,
             follow_redirects=False)
 
         response = yield self.http_client.fetch(self.get_url('/api/task'),
