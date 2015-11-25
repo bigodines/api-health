@@ -13,7 +13,7 @@ def create(options={}):
     return tornado.web.Application(
         [
             (r'/', BaseController),
-            (r'/task', TaskManagement),
+            (r'/task/(.*)', TaskManagement),
             (r'/new_task', NewTaskController),
 
             # API

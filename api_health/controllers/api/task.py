@@ -26,8 +26,13 @@ class TaskApiController(BaseController):
     """
     @gen.coroutine
     def get(self):
-        all_tasks = yield TaskApi().get_tasks()
-        response = json.dumps([r.to_json() for r in all_tasks], default=alchemyencoder)
+        task_id = self.get_argument('id', None)
+        if task_id:
+            task = yield TaskApi().get_task(task_id)
+        else:
+            all_tasks = yield TaskApi().get_tasks()
+            response = json.dumps([r.to_json() for r in all_tasks], default=alchemyencoder)
+
         self.write(response)
 
     @gen.coroutine
@@ -66,6 +71,11 @@ class TaskApi(object):
         raise gen.Return(all_tasks)
 
     @gen.coroutine
+    def get_task(self, task_id):
+        task = session.query(Task).filter_by(id=task_id).first()
+        raise gen.Return(task)
+
+    @gen.coroutine
     def add_task(self, args):
         """
         Stores a new Task() and returns a TaskForm() to be rendered
@@ -91,7 +101,7 @@ class TaskApi(object):
         """
         updates a record. manually and painfully. for now.
         """
-        task = session.query(Task).filter_by(id=args['id']).first()
+        task = yield self.get_task(args["id"])
         # TODO: write a helper in the base class to mimic form.populate_obj()
         # or better yet: make form.populate_obj() work with dicts.
         if 'expected_fields' in args:
