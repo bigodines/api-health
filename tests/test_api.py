@@ -56,14 +56,14 @@ class TestApi(TestHandlerBase):
             follow_redirects=False)
 
         self.assertEqual(200, response.code)
-        response = yield self.http_client.fetch(self.get_url('/api/task'), method='GET')
+        response = yield self.http_client.fetch(self.get_url('/api/task?id=1'), method='GET')
         self.assertEqual(200, response.code)
         actual = json.loads(response.body)
         # assert it created
-        self.assertEqual('http://baz.com', actual[0].get('url'),
+        self.assertEqual('http://baz.com', actual.get('url'),
                 "should have created a task")
 
-        post_args = '{"id": %s, "url": "http://xoxoxo.com"}' % actual[0].get('id')
+        post_args = '{"id": %s, "url": "http://xoxoxo.com"}' % actual.get('id')
         yield self.http_client.fetch(self.get_url('/api/task'),
             method='PUT',
             headers=headers,

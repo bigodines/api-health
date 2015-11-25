@@ -3,7 +3,6 @@ import json
 import datetime
 import decimal
 import urlparse
-
 from tornado import gen
 
 from api_health.controllers.base import BaseController, SimpleMultiDict
@@ -29,6 +28,7 @@ class TaskApiController(BaseController):
         task_id = self.get_argument('id', None)
         if task_id:
             task = yield TaskApi().get_task(task_id)
+            response = json.dumps(task.to_json())
         else:
             all_tasks = yield TaskApi().get_tasks()
             response = json.dumps([r.to_json() for r in all_tasks], default=alchemyencoder)
