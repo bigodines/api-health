@@ -1,9 +1,9 @@
 # api-health
-
+[![Build Status](https://travis-ci.org/bigodines/api-health.svg)](https://travis-ci.org/bigodines/api-health)
 ```
 Disclaimer:
 
-API-Health is still under heavily development. If you are planning on using it for anything else than playing around, 
+API-Health is still under heavily development. If you are planning on using it for anything else than playing around,
 please consider dropping me a line so I start caring about backwards compatibility.
 ```
 
@@ -32,7 +32,7 @@ curl "http://localhost:8080/api/task" -X POST -d '{"url":"http://api.github.com"
 
 >##### update a task
 
-Same as "create", but we'll use **PUT** and also the _id_ field is required. 
+Same as "create", but we'll use **PUT** and also the _id_ field is required.
 ```bash
 curl "http://localhost:8080/api/task" -X PUT -d '{"id": 1, "url":"http://api.github.com", "expected_fields": "current_user_url" }'
 ```
@@ -70,4 +70,4 @@ I'm so happy that you wanna play with me! Here are the simple rules of this proj
 * Use "issues"  to track/add features so we don't work on the same stuff :)
 
 ### License
-MIT. 
+MIT.
