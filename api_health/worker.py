@@ -23,7 +23,12 @@ class Worker(object):
         return len(self.errors) == 0
 
     def fetch(self):
+        if not self.task.url:
+            self.add_error(code=CUSTOM_ERRORS.missing_field, body='url')
+            return None
+
         result = requests.get(self.task.url)
+        print result.text
         try:
             result.raise_for_status()
             json_result = result.json()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import tornado.web
+from tornado.options import options as settings
 
-from api_health import settings
 from api_health.controllers.base import BaseController
 from api_health.controllers.task import TaskManagement
 from api_health.controllers.new import NewTaskController

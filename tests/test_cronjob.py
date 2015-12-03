@@ -4,9 +4,9 @@ import responses
 from tornado.testing import AsyncTestCase, gen_test
 from tornado.queues import Queue
 
-import api_health.cronjob as cron
 from api_health.models.base import Base, session, engine
 from api_health.models.task import Task
+import api_health.cronjob as cron
 
 
 class TestCronJob(AsyncTestCase):
@@ -24,9 +24,11 @@ class TestCronJob(AsyncTestCase):
     def test_producer_should_load_all_tasks(self):
         responses.add(responses.GET,
                 'https://api.github.com',
+                body='something',
                 status=200)
         responses.add(responses.GET,
                 'https://api.github.com/repos/bigodines/api-health/',
+                body='mocked',
                 status=200)
 
         t1 = Task(url="https://api.github.com")
@@ -39,16 +41,10 @@ class TestCronJob(AsyncTestCase):
         self.assertEquals(cron.queue.qsize(), 2)
 
     @gen_test
+    @responses.activate
     def test_consumer_should_run_tasks_from_queue(self):
-        responses.add(responses.GET,
-                'https://api.github.com',
-                status=200)
-        responses.add(responses.GET,
-                'https://api.github.com/repos/bigodines/api-health/',
-                status=200)
-
-        t1 = Task(url="https://api.github.com")
-        t2 = Task(url="https://api.github.com/repos/bigodines/api-health/")
+        t1 = Task()
+        t2 = Task()
 
         # sanity check
         self.assertIsNone(t1.last_run)

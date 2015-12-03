@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+from tornado.options import define, options
 
 
-PROJECT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
-STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
+define('PROJECT_PATH', default=os.path.join(os.path.abspath(os.path.dirname(__file__))))
+define('TEMPLATE_PATH', default=os.path.join(options.PROJECT_PATH, 'templates'))
+define('STATIC_PATH', default=os.path.join(options.PROJECT_PATH, 'static'))
 
-db_engine_url = 'sqlite:////tmp/test.db'
-
+define('port', default=8080)
+define('debug', default=True)
+define('db_engine_url', default='sqlite:////tmp/test.db')

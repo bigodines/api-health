@@ -12,8 +12,8 @@ please consider dropping me a line so I start caring about backwards compatibili
 #### setup
 * clone this repo
 * pip install -r requirements.txt
-* python manage.py test
-* python manage.py runserver
+* python test.py
+* python run.py
 
 #### using (via api)
 >###### get all tasks

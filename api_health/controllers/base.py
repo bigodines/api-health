@@ -3,8 +3,7 @@
 from jinja2 import Environment, FileSystemLoader
 # tornado
 import tornado.web
-
-from api_health import settings
+from tornado.options import options as settings
 
 
 class SimpleMultiDict(dict):
