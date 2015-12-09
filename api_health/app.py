@@ -18,7 +18,11 @@ def create(options={}):
 
             # API
             (r'/api/run', RunApiController),
-            (r'/api/task', TaskApiController)
+            (r'/api/task', TaskApiController),
+
+            # Routes to the angular app
+            (r'/client/(.*)', tornado.web.StaticFileHandler,
+                {"path": settings.CLIENT_PATH})
         ],
         debug=options.get('debug'),
         static_path=settings.STATIC_PATH

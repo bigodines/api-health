@@ -13,7 +13,7 @@ class TaskManagement(BaseController):
     Allows interfacing with the API via browser. (aka GUI)
     """
     @gen.coroutine
-    def get(self):
+    def get(self, task_id=None):
         template_name = "list.html"
         if False:
             template_name = 'detail.html'
@@ -26,7 +26,7 @@ class TaskManagement(BaseController):
     def post(self):
         task_api = TaskApi()
         try:
-            taskForm = yield TaskApi().add_task(self.request.arguments)
+            taskForm = yield task_api.add_task(self.request.arguments)
             self.get() # success leads to a list and confirmation message. (in the future)
 
         except Exception:
