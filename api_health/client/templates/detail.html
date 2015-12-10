@@ -1,11 +1,14 @@
-{% extends 'base.html' %}
-{% block content %}
-{% from "_formhelpers.html" import render_field %}
-<form method="post" action="/task">
+<form novalidate data-ng-submit="save()">
   <dl>
-    {{ render_field(form.url) }}
-    {{ render_field(form.expected_fields) }}
+	  <label>
+		URL:
+		<input type="url" id="url" data-ng-model=url required />
+	  </label>
+	  <label>
+		Expected Fields
+		<textarea data-ng-model=expected_fields />
+	  </label>
   </dl>
-  <p><input type=submit value=Register>
+  <p><input type=submit value="add">
 </form>
 {% endblock %}

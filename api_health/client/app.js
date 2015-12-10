@@ -9,9 +9,17 @@ app.config(function($routeProvider, $interpolateProvider) {
   $interpolateProvider.endSymbol('a}');
 
   $routeProvider
-    .when('/', {
+  .when('/', {
       templateUrl: '/client/templates/list.html',
       controller: 'TaskListCtrl'
-    });
+    })
+  .when('/task/new', {
+      templateUrl: '/client/templates/new_task.html',
+      controller: 'TaskCreateCtrl'
+  })
+  .when('/detail/:taskId', {
+      templateUrl: '/client/templates/detail.html',
+      controller: 'TaskDetailCtrl'
+  });
 });
 

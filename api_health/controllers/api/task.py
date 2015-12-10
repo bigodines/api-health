@@ -4,6 +4,7 @@ import datetime
 import decimal
 import urlparse
 from tornado import gen
+from tornado.escape import json_decode
 
 from api_health.controllers.base import BaseController, SimpleMultiDict
 from api_health.models.base import session
@@ -37,7 +38,7 @@ class TaskApiController(BaseController):
 
     @gen.coroutine
     def post(self):
-        values = json.loads(self.request.body)
+        values = json_decode(self.request.body)
         task = yield TaskApi().add_task(values)
         self.write(json.dumps(task.to_json(), default=alchemyencoder))
 
@@ -85,7 +86,7 @@ class TaskApi(object):
         # TODO: write a helper in the base class to mimic form.populate_obj()
         # or better yet: make form.populate_obj() work with dicts.
         if 'expected_fields' in args:
-            if isinstance(args["expected_fields"], list):
+            if isinstance(args['expected_fields'], list):
                 task.expected_fields = ','.join(str(args['expected_fields']))
             else:
                 task.expected_fields = args['expected_fields']
