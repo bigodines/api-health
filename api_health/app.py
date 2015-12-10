@@ -12,7 +12,7 @@ from api_health.controllers.api.task import TaskApiController
 def create(options={}):
     return tornado.web.Application(
         [
-            (r'/', BaseController),
+            (r'/app/?.*', BaseController),
             (r'/task/(.*)', TaskManagement),
             (r'/new_task', NewTaskController),
 

@@ -20,5 +20,5 @@ class BaseController(tornado.web.RequestHandler):
                               trim_blocks=True)
 
     def get(self):
-        template = self.templateEnv.get_template('index.html')
+        template = self.templateEnv.get_template('angular_index.html')
         self.write(template.render())
