@@ -21,5 +21,6 @@ def create(options={}):
                 {"path": settings.CLIENT_PATH})
         ],
         debug=options.get('debug'),
-        static_path=settings.STATIC_PATH
+        static_path=settings.STATIC_PATH,
+        template_path=settings.TEMPLATE_PATH
     )
