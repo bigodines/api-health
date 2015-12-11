@@ -15,6 +15,13 @@ please consider dropping me a line so I start caring about backwards compatibili
 * python test.py
 * python run.py
 
+#### using (web interface)
+This is still under heavy development: we are building a web interface to view/run/manage your tasks. The web app should be available on /app/
+
+```bash
+http://localhost:8080/app/
+```
+
 #### using (via api)
 >###### get all tasks
 
