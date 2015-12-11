@@ -13,7 +13,16 @@ service.factory('Task', function($resource) {
                         headers = angular.extend({}, headers, {'Content-Type': 'application/json'});
                         return angular.toJson(data); // this will go in the body request
                     }
+                },
+                update: {
+                    method: 'PUT',
+                    url: "/api/task",
+                    transformRequest: function(data, headers) {
+                        headers = angular.extend({}, headers, {'Content-Type': 'application/json'});
+                        return angular.toJson(data); // this will go in the body request
+                    }
                 }
+
 
             });
     Task.prototype.isNew = function(){

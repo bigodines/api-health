@@ -16,7 +16,12 @@ taskController.controller('TaskCreateCtrl', function($scope, $routeParams, $loca
 
 });
 
-taskController.controller('TaskDetailCtrl', function($scope, $routeParams, Task) {
+taskController.controller('TaskDetailCtrl', function($scope, $routeParams, $location, Task) {
     var taskId  = $routeParams.taskId;
-    $scope.task = Task.query({taskId: taskId});
+    $scope.task = Task.get({id: taskId});
+    $scope.update = function() {
+        $scope.task.$update(function() {
+            $location.path('/');
+        })
+    }
 });
