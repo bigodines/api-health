@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # jinja2
-from jinja2 import Environment, FileSystemLoader
 # tornado
 import tornado.web
-from tornado.options import options as settings
 
 
 class SimpleMultiDict(dict):
@@ -15,10 +13,6 @@ class SimpleMultiDict(dict):
 
 
 class BaseController(tornado.web.RequestHandler):
-    templateLoader = FileSystemLoader(searchpath=settings.TEMPLATE_PATH)
-    templateEnv = Environment(loader=templateLoader,
-                              trim_blocks=True)
 
     def get(self):
-        template = self.templateEnv.get_template('index.html')
-        self.write(template.render())
+        self.render("angular_index.html")

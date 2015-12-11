@@ -1,0 +1,21 @@
+<a href="#/task/new">add</a>
+<table class="u-full-width">
+<thead>
+  <tr>
+    <td>STATUS:</td>
+    <td>ID:</td>
+    <td>URL:</td>
+    <td>EXPECTED FIELDS:</td>
+    <td>LAST RUN:</td>
+  <tr>
+</thead>
+<tbody data-ng-repeat="task in all_tasks">
+  <tr>
+    <td>{a task.status a}</td>
+    <td><a href="#/detail/{a task.id a}"> {a task.id a}</a></td>
+    <td>{a task.url a}</td>
+    <td>{a task.expected_fields a}</td>
+    <td>{a task.last_run a}</td>
+  </tr>
+</tbody>
+</table>

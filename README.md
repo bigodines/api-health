@@ -53,13 +53,13 @@ curl "http://localhost:8080/api/run"
 ```
 
 ## Introduction
-API-Health  started as a pet project to refresh my mind after 5 years without coding in Python. I wanted to make something useful, thus I've decided to create an automatic way to monitor when APIs break their contract (or purpose or due to bugs).
+API-Health  started as a pet project to refresh my mind after 5 years without coding in Python. I wanted to make something useful, thus I've decided to create an automatic way to monitor when APIs break their contract (on purpose or due to bugs).
 
 The **how** we'll achieve this is really open and full of experiments. It started from a cookie-cutter template that used _bottle_, which has been replaced by _tornado_ due to the amazing coroutines and built-in queue management.
 
 ### Roadmap
 * The initial plan is to create a solid API that enables developers to hook **api-health** to their existing CI/CD pipelines.
-* I also wanna play with a few frontend-y stack. I've already started something but will revisit the whole thing, I realize that in order to get people using it, I'll probably have to add ```insert a javascript buzzword framework here```.
+* I also wanna go a bit fancy with my AngularJS frontend. Maybe have a dashboard-like interface built in the default package.
 * The system must be **very** flexible (which it is not, as of today) and the worker/queue must be very efficient.
 * We are gonna build a dashboard to measure the most important open APIs on the internets! ;P
 

@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="six columns">
+  Create a new task.
+  </div>
+</div>
+
+<div class="six columns">
+<form novalidate data-ng-submit="save()">
+      <label for="url"> API Endpoint:</label>
+      <input type="text" data-ng-model="task.url" id="url" class="u-full-width" placeholder="http://some.server.com/api/foo" required />
+      <label for="url"> Comma separated expected properties (JSONPath accepted):</label>
+      <textarea data-ng-model="task.expected_fields" id="expectedFields" class="u-full-width" placeholder="user, email, phone[1].number"></textarea>
+    <button id="save">Create</button>
+</form>
+</div>
+

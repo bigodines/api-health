@@ -1,11 +1,9 @@
 click
 coverage
-jinja2
 jsonpath-rw
 nose
 requests
 responses
 tornado
 WTForms
-wtforms-tornado
 WTForms-Alchemy
