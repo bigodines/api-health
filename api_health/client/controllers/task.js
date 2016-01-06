@@ -13,7 +13,6 @@ taskController.controller('TaskCreateCtrl', function($scope, $routeParams, $loca
             $location.path('/');
         })
     }
-
 });
 
 taskController.controller('TaskDetailCtrl', function($scope, $routeParams, $location, Task) {
