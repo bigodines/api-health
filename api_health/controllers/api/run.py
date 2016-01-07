@@ -14,4 +14,4 @@ class RunApiController(BaseController):
         solution using queues"""
         tasks = yield TaskApi().get_tasks()
         [Worker(t).execute() for t in tasks]
-        self.write('')
+        self.write('All tasks have been executed. In the future version, I will display the results here lol')

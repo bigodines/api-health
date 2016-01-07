@@ -3,14 +3,17 @@
 from tornado import gen
 from tornado.ioloop import IOLoop
 from tornado.queues import Queue
+from tornado.options import options as opts
 import os
 import sys
+import datetime
 
 APP_ROOT = os.path.abspath(os.path.join(
     os.path.dirname(__file__), '..'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
 
+from api_health import settings
 from api_health.worker import Worker
 from api_health.controllers.api.task import TaskApi
 
@@ -24,7 +27,14 @@ def consumer():
     while True:
         try:
             task = yield queue.get()
-            Worker(task).execute()
+            print task.last_run
+            print datetime.datetime.now()
+            if task.last_run is None or \
+                    (task.last_run + datetime.timedelta(seconds=opts.minimum_interval)) < \
+                    datetime.datetime.now():
+
+                print "x" * 60
+                Worker(task).execute()
         finally:
             queue.task_done()
 

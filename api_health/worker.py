@@ -26,9 +26,13 @@ class Worker(object):
         if not self.task.url:
             self.add_error(code=CUSTOM_ERRORS.missing_field, body='url')
             return None
+        try:
+            result = requests.get(self.task.url)
+            print result.text
+        except Exception:
+            self.add_error(code=500, body="Could not reach URL")
+            return None
 
-        result = requests.get(self.task.url)
-        print result.text
         try:
             result.raise_for_status()
             json_result = result.json()
@@ -39,6 +43,10 @@ class Worker(object):
         except ValueError:
             self.add_error(code=CUSTOM_ERRORS.invalid_response, body=result.text)
             return None
+        except Exception:
+            self.add_error(code=CUSTOM_ERRORS.unknown_error, body=result.text)
+            return None
+
         return result
 
     def execute(self, task=None):
@@ -46,8 +54,8 @@ class Worker(object):
             self.task = task
         response = self.fetch()
         self.verify(response)
-        self.task.last_run = datetime.now()
         self.task.status = "SUCCESS" if self.has_expected_data() else "FAIL"
+        self.task.last_run = datetime.now()
         session.commit()
         return self.task
 
@@ -69,6 +77,6 @@ class Worker(object):
 
 
 class CUSTOM_ERRORS:
-    invalid_response, missing_field, type_error = range(1, 4)
+    invalid_response, missing_field, type_error, unknown_error = range(1, 5)
 
 
